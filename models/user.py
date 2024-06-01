@@ -11,6 +11,7 @@ def initialise():
     conn.close()
 
 
+# return user_id | -1
 def get_id(aduser: str):
     conn = sqlite3.connect('ulfx.db')
     cursor = conn.cursor()
@@ -21,6 +22,7 @@ def get_id(aduser: str):
     return -1
 
 
+# return user_id
 def create(aduser: str):
     conn = sqlite3.connect('ulfx.db')
     cursor = conn.cursor()

@@ -55,12 +55,12 @@ def get_by_creator(creator: int, limit: int = 30):
     return data
 
 
-# return [(rowid,creator,thumbnail,teaser,title,content,created_at,updated_at), ...]
-def get_by_id(creator: int, limit: int = 30):
+# return (rowid,creator,thumbnail,teaser,title,content,created_at,updated_at)
+def get_by_id(post_id: int):
     conn = sqlite3.connect('ulfx.db')
     cursor = conn.cursor()
 
-    rs = cursor.execute("SELECT rowid,creator,thumbnail,teaser,title,content,created_at,updated_at FROM post WHERE creator=? ORDER BY created_at DESC LIMIT ?", [creator, limit])
+    rs = cursor.execute("SELECT rowid,creator,thumbnail,teaser,title,content,created_at,updated_at FROM post WHERE rowid=? ORDER BY created_at DESC LIMIT ?", [post_id])
     data = rs.fetchall()
 
     conn.close()
