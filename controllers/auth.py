@@ -1,7 +1,6 @@
 from fastapi import APIRouter, Request
 from starlette.responses import RedirectResponse
 
-
 from config import USERMANAGER_URL, TOKEN_REDIRECT_URL, FRONTEND_URL
 
 import requests
