@@ -55,12 +55,42 @@ def get_by_creator(creator: int, limit: int = 30):
     return data
 
 
+# return [(rowid,creator,thumbnail,teaser,title,content,created_at,updated_at), ...]
+def get_by_creators(creators: list, limit: int = 30):
+    conn = sqlite3.connect('ulfx.db')
+    cursor = conn.cursor()
+
+    creators_list = []
+    for creator in creators:
+        if not type(creator) is int:
+            continue
+        creators_list.append(str(creator))
+
+    rs = cursor.execute(f"SELECT rowid,creator,thumbnail,teaser,title,content,created_at,updated_at FROM post WHERE creator IN ({','.join(creators_list)}) ORDER BY created_at DESC LIMIT ?", [limit])
+    data = rs.fetchall()
+
+    conn.close()
+    return data
+
+
 # return (rowid,creator,thumbnail,teaser,title,content,created_at,updated_at)
 def get_by_id(post_id: int):
     conn = sqlite3.connect('ulfx.db')
     cursor = conn.cursor()
 
-    rs = cursor.execute("SELECT rowid,creator,thumbnail,teaser,title,content,created_at,updated_at FROM post WHERE rowid=? ORDER BY created_at DESC LIMIT ?", [post_id])
+    rs = cursor.execute("SELECT rowid,creator,thumbnail,teaser,title,content,created_at,updated_at FROM post WHERE rowid=?", [post_id])
+    data = rs.fetchall()
+
+    conn.close()
+    return data
+
+
+# return (rowid,creator,thumbnail,teaser,title,content,created_at,updated_at)
+def search(creator: int = -1, teaser: str = None, title: str = None, content: str = None):
+    conn = sqlite3.connect('ulfx.db')
+    cursor = conn.cursor()
+
+    rs = cursor.execute("SELECT rowid,creator,thumbnail,teaser,title,content,created_at,updated_at FROM post WHERE rowid=?", [post_id])
     data = rs.fetchall()
 
     conn.close()

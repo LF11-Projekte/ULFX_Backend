@@ -22,6 +22,17 @@ def get_id(aduser: str):
     return -1
 
 
+# return aduser | -1
+def get_aduser(user_id: int):
+    conn = sqlite3.connect('ulfx.db')
+    cursor = conn.cursor()
+    cursor.execute("SELECT aduser FROM user WHERE rowid=?", [user_id])
+    rs = cursor.fetchone()
+    if rs and len(rs) > 0:
+        return rs[0]
+    return -1
+
+
 # return user_id
 def create(aduser: str):
     conn = sqlite3.connect('ulfx.db')
