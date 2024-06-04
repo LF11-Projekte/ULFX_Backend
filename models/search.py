@@ -29,4 +29,6 @@ def search(aduser: str = None, title: str = None, teaser: str = None):
         rs = cursor.fetchall()
         response['post'] = rs
 
+    conn.close()
+
     return response

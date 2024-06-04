@@ -56,6 +56,7 @@ def update(creator: int, post_id: int, thumbnail: str = None, teaser: str = None
         params.append(content)
 
     if len(what) > 0:
+        what.append("updated_at=datetime('now')")
         params.append(post_id)
         params.append(creator)
         cursor.execute(f"UPDATE post SET {','.join(what)} WHERE rowid=? AND creator=?", params)

@@ -39,7 +39,6 @@ def get_followed(follower: int):
     cursor = conn.cursor()
     rs = cursor.execute("SELECT followed FROM follower WHERE follower=?", [follower])
     data = rs.fetchall()
-    conn.commit()
     conn.close()
     return data
 
@@ -50,7 +49,6 @@ def get_follower(followed: int):
     cursor = conn.cursor()
     rs = cursor.execute("SELECT follower FROM follower WHERE followed=?", [followed])
     data = rs.fetchall()
-    conn.commit()
     conn.close()
     return data
 
@@ -62,4 +60,5 @@ def do_follow(follower: int, followed: int):
 
     cursor.execute("SELECT COUNT(*) FROM follower WHERE follower=? AND followed=?", [follower, followed])
     rs = cursor.fetchall()
+    conn.close()
     return False if (rs and rs[0][0] == 0) or not rs else True

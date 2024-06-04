@@ -7,13 +7,15 @@ from controllers.user import UserRouter
 from controllers.post import PostRouter
 from controllers.follower import FollowerRouter
 from controllers.search import SearchRouter
+from controllers.comments import CommentsRouter
 
-from models import user, post, view, follow
+from models import user, post, view, follow, comments
 
 user.initialise()
 post.initialise()
 view.initialise()
 follow.initialise()
+comments.initialise()
 
 app = FastAPI()
 app.add_middleware(SessionMiddleware, secret_key='secret')
@@ -22,6 +24,7 @@ app.include_router(UserRouter, prefix="/user", tags=["user"])
 app.include_router(PostRouter, prefix="/post", tags=["post"])
 app.include_router(FollowerRouter, prefix="/follower", tags=["follower"])
 app.include_router(SearchRouter, prefix="/search", tags=["search"])
+app.include_router(CommentsRouter, prefix="/comment", tags=["comments"])
 
 
 @app.get("/")

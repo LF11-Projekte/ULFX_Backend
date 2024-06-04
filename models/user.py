@@ -31,6 +31,7 @@ def get_aduser(user_id: int):
     cursor = conn.cursor()
     cursor.execute("SELECT aduser FROM user WHERE rowid=?", [user_id])
     rs = cursor.fetchone()
+    conn.close()
     if rs and len(rs) > 0:
         return rs
     return -1
