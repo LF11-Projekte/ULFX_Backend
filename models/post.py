@@ -32,6 +32,39 @@ def create(creator: int, thumbnail: str, teaser: str, title: str, content: str):
     return post_id
 
 
+def update(creator: int, post_id: int, thumbnail: str = None, teaser: str = None, title: str = None, content: str = None):
+    conn = sqlite3.connect('ulfx.db')
+    cursor = conn.cursor()
+
+    what = []
+    params = []
+
+    if thumbnail:
+        what.append("thumbnail=?")
+        params.append(thumbnail)
+
+    if teaser:
+        what.append("teaser=?")
+        params.append(teaser)
+
+    if title:
+        what.append("title=?")
+        params.append(title)
+
+    if content:
+        what.append("content=?")
+        params.append(content)
+
+    if len(what) > 0:
+        params.append(post_id)
+        params.append(creator)
+        cursor.execute(f"UPDATE post SET {','.join(what)} WHERE rowid=? AND creator=?", params)
+
+    conn.commit()
+    conn.close()
+    return post_id
+
+
 # return: [(rowid,creator,thumbnail,teaser,title,content,created_at,updated_at), ...]
 def get_newest(limit: int = 30):
     conn = sqlite3.connect('ulfx.db')
