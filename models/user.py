@@ -1,6 +1,7 @@
 import requests
 import sqlite3
 from config import USERMANAGER_URL
+from utils import dict_factory
 
 
 def initialise():
@@ -14,6 +15,7 @@ def initialise():
 # return user_id | -1
 def get_id(aduser: str):
     conn = sqlite3.connect('ulfx.db')
+    conn.row_factory = dict_factory
     cursor = conn.cursor()
     cursor.execute("SELECT rowid FROM user WHERE aduser=?", [aduser])
     rs = cursor.fetchone()
@@ -25,11 +27,12 @@ def get_id(aduser: str):
 # return aduser | -1
 def get_aduser(user_id: int):
     conn = sqlite3.connect('ulfx.db')
+    conn.row_factory = dict_factory
     cursor = conn.cursor()
     cursor.execute("SELECT aduser FROM user WHERE rowid=?", [user_id])
     rs = cursor.fetchone()
     if rs and len(rs) > 0:
-        return rs[0]
+        return rs
     return -1
 
 

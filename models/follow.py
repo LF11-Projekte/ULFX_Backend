@@ -1,4 +1,5 @@
 import sqlite3
+from utils import dict_factory
 
 
 def initialise():
@@ -34,6 +35,7 @@ def unfollow(follower: int, followed: int):
 
 def get_followed(follower: int):
     conn = sqlite3.connect('ulfx.db')
+    conn.row_factory = dict_factory
     cursor = conn.cursor()
     rs = cursor.execute("SELECT followed FROM follower WHERE follower=?", [follower])
     data = rs.fetchall()
@@ -44,6 +46,7 @@ def get_followed(follower: int):
 
 def get_follower(followed: int):
     conn = sqlite3.connect('ulfx.db')
+    conn.row_factory = dict_factory
     cursor = conn.cursor()
     rs = cursor.execute("SELECT follower FROM follower WHERE followed=?", [followed])
     data = rs.fetchall()

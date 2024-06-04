@@ -13,6 +13,9 @@ class Me(BaseModel):
 
 @UserRouter.get("/me")
 def get_user(request: Request):
+    if not request.session.get("token"):
+        return HTTPException(403)
+
     token = request.session.get("token")
 
     if not token:
@@ -24,6 +27,9 @@ def get_user(request: Request):
 
 @UserRouter.put("/me/")
 def get_user(request: Request, me: Me):
+    if not request.session.get("token"):
+        return HTTPException(403)
+
     token = request.session.get("token")
 
     if not token:
@@ -47,10 +53,15 @@ def get_user(request: Request, me: Me):
 
 @UserRouter.get("/byId/:id")
 def get_user_by_id(user_id: int, request: Request):
+    if not request.session.get("token"):
+        return HTTPException(403)
+
     aduser = user.get_aduser(user_id)
-    aduser = "d22jahnka"
+    if aduser == -1:
+        return HTTPException(404)
+    aduser = aduser.get("aduser")
+
     token = request.session.get("token")
-    token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiZDIya3Jva2VyYWQiLCJhY2Nlc3NUb2tlbiI6IjMwMzY4YjRkLWYyZWEtNGFiMS05Mzc5LWU5NjRjOWExY2U5NiIsInJlZnJlc2hUb2tlbiI6ImI4OTM4NTBkLWJkYjUtNDFiYi1hZDdmLTI4ZjNmNDQ4OTNmMSIsImV4cGlyZXMiOjE3MTc0OTEyMjYxNDgsImlhdCI6MTcxNzQ4NzYyNn0.6hApSXZZMk-EeRkz8lFKi65s9m9ydcLlUuOwChFmBRA"
     response = user.get_user_data(aduser, token)
     response["id"] = user_id
     return response

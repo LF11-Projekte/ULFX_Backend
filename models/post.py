@@ -1,4 +1,5 @@
 import sqlite3
+from utils import dict_factory
 
 
 def initialise():
@@ -34,6 +35,7 @@ def create(creator: int, thumbnail: str, teaser: str, title: str, content: str):
 # return: [(rowid,creator,thumbnail,teaser,title,content,created_at,updated_at), ...]
 def get_newest(limit: int = 30):
     conn = sqlite3.connect('ulfx.db')
+    conn.row_factory = dict_factory
     cursor = conn.cursor()
 
     rs = cursor.execute("SELECT rowid,creator,thumbnail,teaser,title,content,created_at,updated_at FROM post ORDER BY created_at DESC LIMIT ?", [limit])
@@ -46,6 +48,7 @@ def get_newest(limit: int = 30):
 # return [(rowid,creator,thumbnail,teaser,title,content,created_at,updated_at), ...]
 def get_by_creator(creator: int, limit: int = 30):
     conn = sqlite3.connect('ulfx.db')
+    conn.row_factory = dict_factory
     cursor = conn.cursor()
 
     rs = cursor.execute("SELECT rowid,creator,thumbnail,teaser,title,content,created_at,updated_at FROM post WHERE creator=? ORDER BY created_at DESC LIMIT ?", [creator, limit])
@@ -58,6 +61,7 @@ def get_by_creator(creator: int, limit: int = 30):
 # return [(rowid,creator,thumbnail,teaser,title,content,created_at,updated_at), ...]
 def get_by_creators(creators: list, limit: int = 30):
     conn = sqlite3.connect('ulfx.db')
+    conn.row_factory = dict_factory
     cursor = conn.cursor()
 
     creators_list = []
@@ -76,22 +80,11 @@ def get_by_creators(creators: list, limit: int = 30):
 # return (rowid,creator,thumbnail,teaser,title,content,created_at,updated_at)
 def get_by_id(post_id: int):
     conn = sqlite3.connect('ulfx.db')
+    conn.row_factory = dict_factory
     cursor = conn.cursor()
 
     rs = cursor.execute("SELECT rowid,creator,thumbnail,teaser,title,content,created_at,updated_at FROM post WHERE rowid=?", [post_id])
-    data = rs.fetchall()
-
-    conn.close()
-    return data
-
-
-# return (rowid,creator,thumbnail,teaser,title,content,created_at,updated_at)
-def search(creator: int = -1, teaser: str = None, title: str = None, content: str = None):
-    conn = sqlite3.connect('ulfx.db')
-    cursor = conn.cursor()
-
-    rs = cursor.execute("SELECT rowid,creator,thumbnail,teaser,title,content,created_at,updated_at FROM post WHERE rowid=?", [post_id])
-    data = rs.fetchall()
+    data = rs.fetchone()
 
     conn.close()
     return data
