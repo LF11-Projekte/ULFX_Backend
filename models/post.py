@@ -1,5 +1,31 @@
 import sqlite3
+from pydantic import BaseModel
 from utils import dict_factory
+
+
+class Post(BaseModel):
+    id: int
+    creator: int
+    thumbnail: str
+    teaser: str
+    title: str
+    content: str
+    created_at: str
+    updated_at: str
+
+
+class PostPost(BaseModel):
+    thumbnail: str
+    teaser: str
+    title: str
+    content: str
+
+
+class PutPost(BaseModel):
+    thumbnail: str | None = None
+    teaser: str | None = None
+    title: str | None = None
+    content: str | None = None
 
 
 def initialise():

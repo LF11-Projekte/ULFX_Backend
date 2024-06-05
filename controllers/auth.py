@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Request
+from fastapi import APIRouter, Request, HTTPException
 from starlette.responses import RedirectResponse
 import json
 import base64
@@ -53,11 +53,12 @@ def get_auth_token(request: Request, token: str = ""):
         aduser = json.loads(payload_decoded).get("user")
         request.session["aduser"] = aduser
 
-        user_id = user.get_id(aduser)
+        user_id = user.get_id(aduser).get("rowid")
         if user_id == -1:
             user_id = user.create(aduser)
 
         request.session["user_id"] = user_id
 
+        return RedirectResponse(url=f"{FRONTEND_URL}?token={request.session.get('token')}")
 
-    return RedirectResponse(url=FRONTEND_URL)
+    return HTTPException(400)

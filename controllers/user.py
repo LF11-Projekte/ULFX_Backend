@@ -7,23 +7,33 @@ UserRouter = APIRouter()
 
 
 class Me(BaseModel):
+    user_id: int | None = None
+    adname: str | None = None
     displayname: str | None = None
     description: str | None = None
+    profilePicture: str | None = None
 
 
 @UserRouter.get("/me")
-def get_user(request: Request, token: str = None):
+def get_user(request: Request, token: str = None) -> Me:
     if not token:
         if not request.session.get("token"):
             return HTTPException(403)
         token = request.session.get("token")
 
+    result = user.get_me_data(token)
 
-    if not token:
+    if not result:
         return HTTPException(403)
 
-    result = user.get_me_data(token)
-    return result if result else HTTPException(400)
+    print(result)
+
+    return Me(
+        user_id=request.session.get("user_id"),
+        adname=result.get("adName"),
+        displayname=result.get("displayName"),
+        description=result.get("description"),
+    )
 
 
 @UserRouter.put("/me/")

@@ -1,27 +1,12 @@
 from fastapi import APIRouter, Request, HTTPException
-from pydantic import BaseModel
-
 from models import post, follow
+from models.post import Post
 
 PostRouter = APIRouter()
 
 
-class Post(BaseModel):
-    thumbnail: str
-    teaser: str
-    title: str
-    content: str
-
-
-class PutPost(BaseModel):
-    thumbnail: str | None = None
-    teaser: str | None = None
-    title: str | None = None
-    content: str | None = None
-
-
 @PostRouter.post("/")
-def create_post(post_data: Post, request: Request, test_user_id: int = -1):
+def create_post(post_data: post.PostPost, request: Request, test_user_id: int = -1):
     #if not request.session.get("token"):
     #    return HTTPException(403)
 
@@ -39,7 +24,7 @@ def create_post(post_data: Post, request: Request, test_user_id: int = -1):
 
 
 @PostRouter.put("/:id")
-def edit_post(post_data: PutPost, post_id: int, request: Request, test_user_id: int = -1):
+def edit_post(post_data: post.PutPost, post_id: int, request: Request, test_user_id: int = -1):
     #if not request.session.get("token"):
     #    return HTTPException(403)
 
@@ -57,26 +42,49 @@ def edit_post(post_data: PutPost, post_id: int, request: Request, test_user_id: 
 
 
 @PostRouter.get("/newest")
-def get_newest_post(request: Request):
+def get_newest_post(request: Request) -> list[post.Post]:
     #if not request.session.get("token"):
     #    return HTTPException(403)
 
-    return post.get_newest()
+    response = []
+    for x in post.get_newest():
+        response.append(post.Post(
+            id=x.get("rowid"),
+            creator=x.get("creator"),
+            thumbnail=x.get("thumbnail"),
+            teaser=x.get("teaser"),
+            title=x.get("title"),
+            content=x.get("content"),
+            created_at=x.get("created_at"),
+            updated_at=x.get("updated_at")
+        ))
+    return response
 
 
 @PostRouter.get("/byId/:id")
-def get_post_by_id(post_id: int, request: Request):
+def get_post_by_id(post_id: int, request: Request) -> Post:
     #if not request.session.get("token"):
     #    return HTTPException(403)
 
     if not post_id:
         return HTTPException(status_code=404)
 
-    return post.get_by_id(post_id)
+    x = post.get_by_id(post_id)
+
+    return post.Post(
+        id=x.get("rowid"),
+        creator=x.get("creator"),
+        thumbnail=x.get("thumbnail"),
+        teaser=x.get("teaser"),
+        title=x.get("title"),
+        content=x.get("content"),
+        created_at=x.get("created_at"),
+        updated_at=x.get("updated_at")
+    )
 
 
 @PostRouter.get("/followed")
-def get_post_of_followed(request: Request, test_user_id: int = -1):
+def get_post_of_followed(request: Request, test_user_id: int = -1) -> list[post.Post]:
     #if not request.session.get("token"):
     #    return HTTPException(403)
 
@@ -94,13 +102,39 @@ def get_post_of_followed(request: Request, test_user_id: int = -1):
         if x.get("follower"):
             creators.append(x.get("follower"))
 
-    return post.get_by_creators(creators)
+    response = []
+
+    for x in post.get_by_creators(creators):
+        response.append(post.Post(
+            id=x.get("rowid"),
+            creator=x.get("creator"),
+            thumbnail=x.get("thumbnail"),
+            teaser=x.get("teaser"),
+            title=x.get("title"),
+            content=x.get("content"),
+            created_at=x.get("created_at"),
+            updated_at=x.get("updated_at")
+        ))
+    return response
 
 
 @PostRouter.get("/byUserId/:id")
-def get_post_of_user(user_id: int, request: Request):
+def get_post_of_user(user_id: int, request: Request) -> list[post.Post]:
     #if not request.session.get("token"):
     #    return HTTPException(403)
 
-    return post.get_by_creator(user_id)
+    response = []
+
+    for x in post.get_by_creator(user_id):
+        response.append(post.Post(
+            id=x.get("rowid"),
+            creator=x.get("creator"),
+            thumbnail=x.get("thumbnail"),
+            teaser=x.get("teaser"),
+            title=x.get("title"),
+            content=x.get("content"),
+            created_at=x.get("created_at"),
+            updated_at=x.get("updated_at")
+        ))
+    return response
 
