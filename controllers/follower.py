@@ -17,10 +17,6 @@ def get_followers_of_user(user_id: int, request: Request):
     return {"followers": 0 if not response else len(response)}
 
 
-class Follow(BaseModel):
-    user_id: int
-
-
 @FollowerRouter.post("/follow/:id")
 def get_followers_of_user(follow_id: int, request: Request, test_user_id: int = -1):
     #if not request.session.get("token"):

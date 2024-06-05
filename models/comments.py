@@ -7,6 +7,21 @@ class PostCommentModel(BaseModel):
     content: str
 
 
+class CommentModel(BaseModel):
+    id : int | None = None
+    creator: int | None = None
+    reference: int | None = None
+    content: str | None = None
+    isPostComment: int | None = None
+    created_at: str | None = None
+    updated_at: str | None = None
+
+
+class PostCommentsModel(BaseModel):
+    comment: CommentModel
+    subcomment: list[CommentModel]
+
+
 def initialise():
     conn = sqlite3.connect('ulfx.db')
     conn.execute("CREATE TABLE IF NOT EXISTS comment(" +

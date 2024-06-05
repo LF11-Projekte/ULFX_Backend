@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Request, HTTPException
+from pydantic import BaseModel
 from starlette.responses import RedirectResponse
 import json
 import base64
@@ -12,7 +13,13 @@ import requests
 AuthRouter = APIRouter()
 
 
-@AuthRouter.get("/login")
+class StatusModel(BaseModel):
+    authorized: bool
+
+
+@AuthRouter.get("/login", description="""
+Redirect to this route. This route will redirect to usermanager automatically with redirect parameters.
+""")
 def get_auth_login(request: Request):
     if request.session.get("token"):
         token = request.session.get("token")
@@ -26,11 +33,11 @@ def get_auth_login(request: Request):
 
 
 @AuthRouter.get("/verify")
-def get_auth_login(request: Request):
+def get_auth_login(request: Request) -> StatusModel:
     if request.session.get("token"):
-        return {"status": True}
+        return StatusModel(authorized=True)
     else:
-        return {"status": False}
+        return StatusModel(authorized=False)
 
 
 @AuthRouter.get("/logout")
@@ -39,7 +46,9 @@ def get_auth_login(request: Request):
     return RedirectResponse(url=FRONTEND_URL)
 
 
-@AuthRouter.get("/token")
+@AuthRouter.get("/token", description="""
+Only used for usermanager! After verifying token it will be redirected to frontend with token parameter.
+""")
 def get_auth_token(request: Request, token: str = ""):
     if token:
         res = requests.get(f"{USERMANAGER_URL}/auth/verify", headers={"Authorization": f"Bearer {token}"})
