@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Request
 from starlette.responses import RedirectResponse
 import json
+import base64
 
 from config import USERMANAGER_URL, TOKEN_REDIRECT_URL, FRONTEND_URL
 
@@ -48,7 +49,8 @@ def get_auth_token(request: Request, token: str = ""):
         request.session["token"] = token
 
         payload = token.split(".")[1]
-        aduser = json.load(payload).get("user")
+        payload_decoded = base64.b64decode(f"{payload}==").decode("utf-8")
+        aduser = json.loads(payload_decoded).get("user")
         request.session["aduser"] = aduser
 
         user_id = user.get_id(aduser)

@@ -20,7 +20,7 @@ def get_id(aduser: str):
     cursor.execute("SELECT rowid FROM user WHERE aduser=?", [aduser])
     rs = cursor.fetchone()
     if rs and len(rs) > 0:
-        return rs[0]
+        return rs
     return -1
 
 
