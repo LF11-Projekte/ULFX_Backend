@@ -1,6 +1,8 @@
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, HTTPException
 from starlette.middleware.sessions import SessionMiddleware
 import uvicorn
+
+from fastapi.middleware.cors import CORSMiddleware
 
 from controllers.auth import AuthRouter
 from controllers.user import UserRouter
@@ -26,6 +28,15 @@ app.include_router(FollowerRouter, prefix="/follower", tags=["follower"])
 app.include_router(SearchRouter, prefix="/search", tags=["search"])
 app.include_router(CommentsRouter, prefix="/comment", tags=["comments"])
 
+origins = ["*"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.get("/")
 async def root():
