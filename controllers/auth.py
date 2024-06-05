@@ -24,6 +24,14 @@ def get_auth_login(request: Request):
     return RedirectResponse(url=FRONTEND_URL)
 
 
+@AuthRouter.get("/verify")
+def get_auth_login(request: Request):
+    if request.session.get("token"):
+        return {"status": True}
+    else:
+        return {"status": False}
+
+
 @AuthRouter.get("/logout")
 def get_auth_login(request: Request):
     request.session.copy()
