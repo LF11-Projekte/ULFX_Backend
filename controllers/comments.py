@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from starlette.requests import Request
 from models import comments
@@ -30,9 +30,10 @@ def comment_post(post_id: int, comment_data: Comment, request: Request):
     #    return HTTPException(403)
 
     user_id = request.session.get("user_id")
+    user_id = 1
 
-    #if not user_id:
-    #    return HTTPException(403)
+    if not user_id:
+        return HTTPException(403)
 
     comments.add_comment(user_id, post_id, comment_data.content, 1)
 
@@ -41,13 +42,14 @@ def comment_post(post_id: int, comment_data: Comment, request: Request):
 
 @CommentsRouter.post("/comment/:id")
 def comment_post(comment_id: int, comment_data: Comment, request: Request):
-    # if not request.session.get("token"):
-    #    return HTTPException(403)
+    #if not request.session.get("token"):
+    #   return HTTPException(403)
 
     user_id = request.session.get("user_id")
+    user_id = 1
 
-    #if not user_id:
-    #    return HTTPException(403)
+    if not user_id:
+        return HTTPException(403)
 
     comments.add_comment(user_id, comment_id, comment_data.content, 0)
 
@@ -60,9 +62,10 @@ def comment_post(comment_id: int, comment_data: Comment, request: Request):
     #    return HTTPException(403)
 
     user_id = request.session.get("user_id")
+    user_id = 1
 
-    #if not user_id:
-    #    return HTTPException(403)
+    if not user_id:
+        return HTTPException(403)
 
     comments.edit_comment(user_id, comment_id, comment_data.content)
 
