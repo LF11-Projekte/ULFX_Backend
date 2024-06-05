@@ -21,12 +21,17 @@ class PutPost(BaseModel):
 
 
 @PostRouter.post("/")
-def get_newest_post(post_data: Post, request: Request):
+def create_post(post_data: Post, request: Request, test_user_id: int = -1):
     #if not request.session.get("token"):
     #    return HTTPException(403)
 
     user_id = request.session.get("user_id")
-    user_id = 1
+
+    if test_user_id != -1:
+        user_id = test_user_id
+
+    if not user_id or user_id < 0:
+        return HTTPException(400)
 
     post_id = post.create(user_id, post_data.thumbnail, post_data.teaser, post_data.title, post_data.content)
 
@@ -34,12 +39,17 @@ def get_newest_post(post_data: Post, request: Request):
 
 
 @PostRouter.put("/:id")
-def get_newest_post(post_data: PutPost, post_id: int, request: Request):
+def edit_post(post_data: PutPost, post_id: int, request: Request, test_user_id: int = -1):
     #if not request.session.get("token"):
     #    return HTTPException(403)
 
     user_id = request.session.get("user_id")
-    user_id = 1
+
+    if test_user_id != -1:
+        user_id = test_user_id
+
+    if not user_id or user_id < 0:
+        return HTTPException(400)
 
     post.update(user_id, post_id, post_data.thumbnail, post_data.teaser, post_data.title, post_data.content)
 
@@ -66,12 +76,17 @@ def get_post_by_id(post_id: int, request: Request):
 
 
 @PostRouter.get("/followed")
-def get_post_of_followed(request: Request):
+def get_post_of_followed(request: Request, test_user_id: int = -1):
     #if not request.session.get("token"):
     #    return HTTPException(403)
 
     user_id = request.session.get("user_id")
-    user_id = 1
+
+    if test_user_id != -1:
+        user_id = test_user_id
+
+    if not user_id or user_id < 0:
+        return HTTPException(400)
 
     creators = []
 
@@ -80,3 +95,12 @@ def get_post_of_followed(request: Request):
             creators.append(x.get("follower"))
 
     return post.get_by_creators(creators)
+
+
+@PostRouter.get("/byUserId/:id")
+def get_post_of_user(user_id: int, request: Request):
+    #if not request.session.get("token"):
+    #    return HTTPException(403)
+
+    return post.get_by_creator(user_id)
+

@@ -12,13 +12,12 @@ class Me(BaseModel):
 
 
 @UserRouter.get("/me")
-def get_user(request: Request):
-    #if not request.session.get("token"):
-    #    return HTTPException(403)
+def get_user(request: Request, token: str = None):
+    if not token:
+        if not request.session.get("token"):
+            return HTTPException(403)
+        token = request.session.get("token")
 
-    token = request.session.get("token")
-
-    token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiZDIya3Jva2VyYWQiLCJhY2Nlc3NUb2tlbiI6IjQwNTFlNDk4LWQwZDAtNDhlZi1hNmQ0LWMwZDY0Njc3OTNkYyIsInJlZnJlc2hUb2tlbiI6ImExNmQ5ODU1LTI1Y2QtNDEyYS04MjdkLTEyNDE1NTRlOWRjNiIsImV4cGlyZXMiOjE3MTc1NzY4MTkyNDAsImlhdCI6MTcxNzU3MzIxOX0.kp5EWITa3Rhooytg04TtkCm1nBwJWy6n1f5YDfw369Y"
 
     if not token:
         return HTTPException(403)
@@ -28,15 +27,11 @@ def get_user(request: Request):
 
 
 @UserRouter.put("/me/")
-def get_user(request: Request, me: Me):
-    #if not request.session.get("token"):
-    #    return HTTPException(403)
-
-    token = request.session.get("token")
-    token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiZDIya3Jva2VyYWQiLCJhY2Nlc3NUb2tlbiI6IjQwNTFlNDk4LWQwZDAtNDhlZi1hNmQ0LWMwZDY0Njc3OTNkYyIsInJlZnJlc2hUb2tlbiI6ImExNmQ5ODU1LTI1Y2QtNDEyYS04MjdkLTEyNDE1NTRlOWRjNiIsImV4cGlyZXMiOjE3MTc1NzY4MTkyNDAsImlhdCI6MTcxNzU3MzIxOX0.kp5EWITa3Rhooytg04TtkCm1nBwJWy6n1f5YDfw369Y"
-
+def get_user(request: Request, me: Me, token: str = None):
     if not token:
-        return HTTPException(403)
+        if not request.session.get("token"):
+            return HTTPException(403)
+        token = request.session.get("token")
 
     status = []
 
@@ -55,16 +50,17 @@ def get_user(request: Request, me: Me):
 
 
 @UserRouter.get("/byId/:id")
-def get_user_by_id(user_id: int, request: Request):
-    #if not request.session.get("token"):
-    #    return HTTPException(403)
+def get_user_by_id(user_id: int, request: Request, token: str = None):
+    if not token:
+        if not request.session.get("token"):
+            return HTTPException(403)
+        token = request.session.get("token")
 
     aduser = user.get_aduser(user_id)
     if aduser == -1:
         return HTTPException(404)
     aduser = aduser.get("aduser")
 
-    token = request.session.get("token")
     response = user.get_user_data(aduser, token)
     response["id"] = user_id
     return response

@@ -1,5 +1,4 @@
 from fastapi import APIRouter, HTTPException
-from pydantic import BaseModel
 from starlette.requests import Request
 from models import comments
 
@@ -15,17 +14,14 @@ def get_comments_of_post(post_id: int, request: Request):
 
     for comment in comments.get_comments_of_post(post_id):
         subcomments = comments.get_comments_of_comment(comment.get("rowid"))
-        response.append({"comment": comment, "subcomments": subcomments})
+        response.append({"comment": comment,
+                        "subcomments": subcomments})
 
     return response
 
 
-class Comment(BaseModel):
-    content: str
-
-
 @CommentsRouter.post("/post/:id")
-def comment_post(post_id: int, comment_data: Comment, request: Request):
+def comment_post(post_id: int, comment_data: comments.PostCommentModel, request: Request):
     #if not request.session.get("token"):
     #    return HTTPException(403)
 
@@ -41,7 +37,7 @@ def comment_post(post_id: int, comment_data: Comment, request: Request):
 
 
 @CommentsRouter.post("/comment/:id")
-def comment_post(comment_id: int, comment_data: Comment, request: Request):
+def comment_post(comment_id: int, comment_data: comments.PostCommentModel, request: Request):
     #if not request.session.get("token"):
     #   return HTTPException(403)
 
@@ -57,7 +53,7 @@ def comment_post(comment_id: int, comment_data: Comment, request: Request):
 
 
 @CommentsRouter.put("/:id")
-def comment_post(comment_id: int, comment_data: Comment, request: Request):
+def comment_post(comment_id: int, comment_data: comments.PostCommentModel, request: Request):
     #if not request.session.get("token"):
     #    return HTTPException(403)
 

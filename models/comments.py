@@ -1,5 +1,10 @@
 import sqlite3
+from pydantic import BaseModel
 from utils import dict_factory
+
+
+class PostCommentModel(BaseModel):
+    content: str
 
 
 def initialise():
