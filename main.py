@@ -28,7 +28,7 @@ app.include_router(FollowerRouter, prefix="/follower", tags=["follower"])
 app.include_router(SearchRouter, prefix="/search", tags=["search"])
 app.include_router(CommentsRouter, prefix="/comment", tags=["comments"])
 
-origins = ["*"]
+origins = ["http://localhost:5173"]
 
 app.add_middleware(
     CORSMiddleware,
